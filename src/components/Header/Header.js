@@ -18,7 +18,6 @@ class Header extends React.Component {
 		return true;
 	}
 	render() {
-		console.log(this.login);
 		return (
 			<div>
 				<header
