@@ -56,7 +56,7 @@ class App extends React.Component {
 
         <div className="note">
           <textarea id="note1"></textarea>
-          <button onClick={this.saveNote} className="btn btn-default">Save</button>
+          <button onClick={this.saveNote} className="btn btn-default">Save me</button>
         </div>
 
         <ul>
