@@ -1,4 +1,5 @@
 const express = require('express')
+const bodyParser = require('body-parser')
 const debug = require('debug')('app:server')
 const path = require('path')
 const webpack = require('webpack')
@@ -9,6 +10,8 @@ const session = require('express-session')
 const passport = require('passport')
 
 const app = express()
+app.use(bodyParser.json()) // Support JSON Encoded bodies
+app.use(bodyParser.urlencoded({extended: true})) // Support encoded bodies
 
 // Initialize Mongo DB
 require('./database')
