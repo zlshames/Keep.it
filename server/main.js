@@ -5,10 +5,13 @@ const webpack = require('webpack')
 const webpackConfig = require('../config/webpack.config')
 const project = require('../config/project.config')
 const compress = require('compression')
-const session = require('express-session');
-const passport = require('passport');
+const session = require('express-session')
+const passport = require('passport')
 
 const app = express()
+
+// Initialize Mongo DB
+require('./database')
 
 // Apply gzip compression
 app.use(compress())
@@ -18,52 +21,15 @@ app.use(session({
   secret: 'keep.it-session',
   saveUninitialized: true,
   resave: true
-}));
+}))
 
 // Apply passportJS
-require('../config/passport')(passport);
-app.use(passport.initialize());
-app.use(passport.session());
+require('./passport')(passport)
+app.use(passport.initialize())
+app.use(passport.session())
 
-// Apply Auth routes
-app.get('/app', isAuthenticated, (req, res) => {
-  return res.json({
-    success: true,
-    page: 'Profile',
-    message: 'Successfully authenticated',
-    user: req.user
-  });
-});
-
-// Facebook
-app.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email'] }));
-app.get('/auth/facebook/callback', passport.authenticate('facebook', {
-    successRedirect: '/app',
-    failureRedirect: '/login'
-}));
-
-// Google
-app.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
-app.get('/auth/google/callback', passport.authenticate('google', {
-    successRedirect: '/app',
-    failureRedirect: '/login'
-}));
-
-// Github
-app.get('/auth/github', passport.authenticate('github', { scope: ['user:email'] }));
-app.get('/auth/github/callback', passport.authenticate('github', {
-    successRedirect: '/app',
-    failureRedirect: '/login'
-}));
-
-// "Middleware"
-function isAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  } else {
-    return res.redirect('/login')
-  }
-}
+// Create routes
+require('./routes')(app, passport)
 
 // ------------------------------------
 // Apply Webpack HMR Middleware
@@ -95,6 +61,14 @@ if (project.env === 'development') {
   // (ignoring file requests). If you want to implement universal
   // rendering, you'll want to remove this middleware.
   app.use('*', function (req, res, next) {
+    const reqPath = req._parsedUrl.path
+
+    if (reqPath === '/app') {
+      if (!req.isAuthenticated()) {
+        return res.redirect('/login')
+      }
+    }
+
     const filename = path.join(compiler.outputPath, 'index.html')
     compiler.outputFileSystem.readFile(filename, (err, result) => {
       if (err) {
@@ -118,6 +92,19 @@ if (project.env === 'development') {
   // the web server and not the app server, but this helps to demo the
   // server in production.
   app.use(express.static(project.paths.dist()))
+
+  app.use('*', function (req, res, next) {
+    const reqPath = req._parsedUrl.path
+
+    if (reqPath === '/app') {
+      if (!req.isAuthenticated()) {
+        return res.redirect('/login')
+      }
+    }
+
+    res.sendFile(path.join(__dirname, '../dist/index.html'))
+    res.end()
+  })
 }
 
 module.exports = app
