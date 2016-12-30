@@ -9,9 +9,12 @@ const compress = require('compression')
 const session = require('express-session')
 const passport = require('passport')
 
+// Initialize Express Framework
 const app = express()
-app.use(bodyParser.json()) // Support JSON Encoded bodies
-app.use(bodyParser.urlencoded({extended: true})) // Support encoded bodies
+
+// Apply body parsing support for JSON
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
 // Initialize Mongo DB
 require('./database')(project)
@@ -26,7 +29,7 @@ app.use(session({
   resave: true
 }))
 
-// Apply passportJS
+// Apply passportJS authentication
 require('./passport')(passport)
 app.use(passport.initialize())
 app.use(passport.session())

@@ -7,11 +7,12 @@ const Schema = mongoose.Schema
 const noteSchema = new Schema({
   content: { type: String, required: true, unique: false },
   owner: { type: String, require: true, unique: false },
-  created_at: Date,
-  updated_at: Date,
+  created_at: { type: Date, require: true, unique: false },
+  updated_at: { type: Date, require: false, unique: false },
   deleted_at: Date
 })
 
+// Create a listener to do something before saving
 noteSchema.pre('save', function(next) {
   this.updated_at = new Date()
   next()

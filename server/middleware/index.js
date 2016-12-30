@@ -1,6 +1,7 @@
 'use strict'
 
-module.exports = function isAuthenticated(req, res, next) {
+// Middleware: Redirect to login if not authenticated
+module.exports = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next()
   } else {
