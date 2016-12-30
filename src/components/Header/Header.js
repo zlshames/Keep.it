@@ -13,10 +13,8 @@ class Header extends React.Component {
 		}
 	}
 	shouldComponentUpdate(props,state) {//change for redux store later,that would track
-		let login = (window.location.pathname === "/")? this.login : null;
-		this.setState({
-			login
-		})
+		state.login = (window.location.pathname === "/")? this.login : null;
+
 		return true;
 	}
 	render() {
