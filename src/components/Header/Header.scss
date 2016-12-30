@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway:200,400');
+
+$color__background : #5E8EE4;
+$color__font : #E5E5E5;
+
+.header {
+
+	font-family: 'Raleway', sans-serif;
+	display : flex;
+	padding : 1em;
+	background-color : $color__background;
+	color : $color__font;
+	z-index: 2;
+
+	label {
+
+		margin-bottom: 0;
+		font-size : 35px;
+		color : white;
+		&.title {
+
+			p {
+
+				margin : 0 0.2em 0 0;
+				font-weight: 200;
+			}
+			display : flex;
+		}
+	}
+	.login {
+
+		margin: auto 1em auto auto;
+		font-size : 18px;
+		cursor: pointer;
+	}
+}

@@ -1,23 +1,36 @@
 import React from 'react'
-import { IndexLink, Link } from 'react-router'
-import { AppBar, Tabs, Tab, IconButton, FlatButton } from 'material-ui'
+import { Link } from 'react-router'
 
-import './Header.scss'
+import "./Header.scss";
 
-const styles = {
-  title: {
-    cursor: 'pointer',
-    marginLeft: 0
-  },
+class Header extends React.Component {
+	login = <Link className = "login" to = "/login">login</Link>;
+	constructor() {
+
+		super();
+		this.state = {
+			login : (window.location.pathname === "/")? this.login : null,
+		}
+	}
+	shouldComponentUpdate(props,state) {//change for redux store later,that would track
+		let login = (window.location.pathname === "/")? this.login : null;
+		this.setState({
+			login
+		})
+		return true;
+	}
+	render() {
+		console.log(this.login);
+		return (
+			<div>
+				<header
+					className = "header" >
+					<label className = "title"><p><Link to = "/">Keep</Link></p> it</label>
+					{this.state.login}
+				</header>
+			</div>
+		);
+	}
 }
-
-export const Header = () => (
-  <div>
-    <AppBar
-      title={<span style={styles.title}>Keep.it</span>}
-      iconElementRight={<FlatButton label="Login" />}>
-    </AppBar>
-  </div>
-)
 
 export default Header
