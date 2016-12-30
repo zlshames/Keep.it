@@ -14,7 +14,7 @@ app.use(bodyParser.json()) // Support JSON Encoded bodies
 app.use(bodyParser.urlencoded({extended: true})) // Support encoded bodies
 
 // Initialize Mongo DB
-require('./database')
+require('./database')(project)
 
 // Apply gzip compression
 app.use(compress())

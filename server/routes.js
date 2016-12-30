@@ -5,6 +5,18 @@ const NoteController = require('./controllers/NoteController')
 const isAuthenticated = require('./middleware')
 
 module.exports = function (app, passport) {
+  // Auth Check route
+  app.get('/auth/check', (request, response) => {
+    if (req.isAuthenticated()) {
+      response.json({
+        authenticated: true,
+        user: req.user
+      })
+    } else {
+      response.json({ authenticated: false })
+    }
+  })
+
   // Note routes
   app.get('/notes', isAuthenticated, NoteController.show)
   app.post('/notes', isAuthenticated, NoteController.store)

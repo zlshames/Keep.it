@@ -13,12 +13,14 @@ class NoteController {
     note.save(err => {
       if (err) console.log(err)
 
-      response.json({
-        success: true,
-        message: 'Successfully created note',
-        data: {
-          note_id: note.id
-        }
+      Note.find({ owner: request.user.id }, (err, notes) => {
+        if (err) console.log(err)
+
+        response.json({
+          success: true,
+          message: 'Successfully created note',
+          data: notes
+        })
       })
     })
   }
