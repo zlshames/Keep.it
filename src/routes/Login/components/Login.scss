@@ -1,5 +1,11 @@
-.duck {
-  display: block;
-  width: 120px;
-  margin: 1.5rem auto;
+@import "../assets/bootstrap-social.css";
+
+.login__body {
+
+	background: #e5e5e5;
+	display: flex;
+	min-height: 100%;
+	.login_inner {
+		margin : 1em auto;
+	}
 }
