@@ -22,7 +22,7 @@ class Header extends React.Component {
 			<div>
 				<header
 					className = "header" >
-					<label className = "title"><p><Link to = "/">Keep</Link></p> it</label>
+					<label className = "title"><p>Keep</p> it</label>
 					{this.state.login}
 				</header>
 			</div>
