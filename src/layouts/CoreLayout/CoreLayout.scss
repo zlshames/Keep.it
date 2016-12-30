@@ -1,7 +1,15 @@
-.main-body {
-	margin-top: 2em;
+.main__wrapper ,.main__body{
+
+	&:not(.main__wrapper) {
+		margin-top: 2em;
+	}
+	display: flex;
+  min-height: 100%;
+  flex-direction: column;
 }
+
 .background {
+	
 	position: fixed;
 	display: block;
 	left: 0;

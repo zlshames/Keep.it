@@ -4,7 +4,7 @@ import { Link } from 'react-router'
 import "./Header.scss";
 
 class Header extends React.Component {
-	login = <Link className = "login" to = "/login">login</Link>;
+	login = <Link className = "login__link" to = "/login">login</Link>;
 	constructor() {
 
 		super();
@@ -13,22 +13,18 @@ class Header extends React.Component {
 		}
 	}
 	shouldComponentUpdate(props,state) {//change for redux store later,that would track
-		let login = (window.location.pathname === "/")? this.login : null;
-		this.setState({
-			login
-		})
+		state.login = (window.location.pathname === "/")? this.login : null;
+
 		return true;
 	}
 	render() {
-		console.log(this.login);
+
 		return (
-			<div>
 				<header
-					className = "header" >
-					<label className = "title"><p><Link to = "/">Keep</Link></p> it</label>
+					className = "header">
+					<label className = "title"><p>Keep</p> it</label>
 					{this.state.login}
 				</header>
-			</div>
 		);
 	}
 }
