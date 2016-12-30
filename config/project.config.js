@@ -10,6 +10,7 @@ debug('Creating default configuration.')
 // ========================================================
 const config = {
   env : process.env.NODE_ENV || 'development',
+  db_name: 'keep-it',
 
   // ----------------------------------
   // Project Structure
