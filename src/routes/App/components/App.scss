@@ -1,5 +1,15 @@
-.duck {
-  display: block;
-  width: 120px;
-  margin: 1.5rem auto;
+.notes {
+
+	display: flex;
+	flex-direction: row;
+	flex-wrap:wrap;
+	.note {
+		margin : 0.5em;
+		background: white;
+		color : black;
+		textarea{
+
+			margin : 0.5em;
+		}
+	}
 }

@@ -72,7 +72,7 @@ class NoteController {
       response.json({
         success: true,
         message: 'Successfully updated note'
-      })
+      });
     })
   }
 
