@@ -3,24 +3,48 @@ import superagent from "superagent"
 
 import './App.scss'
 import Note from "../../../components/Note";
+import Masonry from 'react-masonry-component';
 
 // TODO:
 //ADD undo method for deleted notes
 //Extract the Note to a different component
 //	Add shouldcomponentUpdate for text,id changes
+//Move save note to Note class
 
 class App extends React.Component {
   constructor() {
 
     super()
-    this.saveNote = this.saveNote.bind(this);
-		this.editNote = this.editNote.bind(this);
 		this.grabNotes = this.grabNotes.bind(this);
+		this.removeNote = this.removeNote.bind(this);
+	  this.saveNote = this.saveNote.bind(this);
 		this.state = {
       notes: []
     }
 		this.grabNotes();
 
+  }
+	saveNote(e) {
+
+    let textBox = e.target.previousSibling,
+        noteId = textBox.id,
+        noteText = textBox.value
+
+    superagent
+      .post('http://localhost:3000/notes')
+      .send({
+        content: noteText
+      })
+      .end((err, res) => {
+
+        if(err) {
+				  console.log(err)
+        } else {
+          this.setState({
+            notes: res.body.data
+          })
+        }
+    })
   }
 	grabNotes() {
 
@@ -37,60 +61,11 @@ class App extends React.Component {
         }
     })
 	}
-  saveNote(e) {
-
-    let textBox = e.target.previousSibling,
-        noteId = textBox.id,
-        noteText = textBox.value
-
-    superagent
-      .post('http://localhost:3000/notes')
-      .send({
-        content: noteText
-      })
-      .end((err, res) => {
-        if(err) {
-				  console.log(err)
-        } else {
-          this.setState({
-            notes: res.body.data
-          })
-        }
-    })
-  }
-	editNote(e) {
-
-		if(e.keyCode !== 13) {
-			return;
-		}
-
-
-		superagent
-      .put('http://localhost:3000/notes/' + e.target.parentElement.id)
-			.send({
-				content : e.target.value
-			})
-      .end((err, res) => {
-				if (err) {
-					console.log(err)
-        }
-    })
-	}
-	deleteNote(e) {
-
-		e.persist();
-		let note = e.target.parentElement.parentElement;
-
-		superagent
-	    .delete('http://localhost:3000/notes/' + note.id)
-	    .end((err, res) => {
-
-				if (err) {
-					console.log(err)
-	      } else if(res.body.success) {
-					note.parentElement.removeChild(note);
-				}
-	  })
+	removeNote(id) {
+		let notes = this.state.notes.filter(val => (val._id === id)? false : true);
+		this.setState({
+			notes
+		})
 	}
 	render() {
 
@@ -98,7 +73,8 @@ class App extends React.Component {
 			<Note
 				key = {note._id}
 				id = {note._id}
-				content = {note.content} />
+				content = {note.content}
+				remove = {this.removeNote} />
     );
 
     return (
@@ -108,10 +84,12 @@ class App extends React.Component {
 				<textarea id="note1"></textarea>
 				<button onClick={this.saveNote} className="btn btn-default">Save me</button>
 			</div>
-			
-			<div className = "notes">
-				{notes}
-			</div>
+
+
+			<Masonry
+	      className = "notes">
+        {notes}
+      </Masonry>
 
       </div>
     );
