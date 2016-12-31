@@ -60,7 +60,7 @@ class NoteController {
 
   static update(request, response) {
     // Find note, and update content
-    Note.findOneAndUpdate({ id: request.params.id, owner: request.user.id }, { content: request.body.content }, (err, note) => {
+    Note.findOneAndUpdate({ _id: request.params.id, owner: request.user.id }, { content: request.body.content }, (err, note) => {
       if (err) {
         return response.json({
           success: false,
@@ -72,13 +72,13 @@ class NoteController {
       response.json({
         success: true,
         message: 'Successfully updated note'
-      });
+      })
     })
   }
 
   static destroy(request, response) {
     // Find note, and delete it
-    Note.findOneAndRemove({ id: request.params.id, owner: request.user.id }, err => {
+    Note.findOneAndRemove({ _id: request.params.id, owner: request.user.id }, err => {
       if (err) {
         return response.json({
           success: false,
