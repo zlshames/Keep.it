@@ -5,7 +5,6 @@
 	color : black;
 	display: flex;
 	flex-direction: column;
-	max-width: 400px;
 	&__top {
 
 		display: flex;
@@ -24,7 +23,7 @@
 		margin-top: 0;
 		border : none;
 		resize: none;
-		width : auto;
+		width: auto;
 		&:focus {
 
 			outline: none;
