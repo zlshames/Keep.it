@@ -2,7 +2,7 @@
 *.log
 
 node_modules
-
+[^node_modules/react-masonry-component/lib/index.js]
 dist
 coverage
 
