@@ -18,6 +18,8 @@ class App extends React.Component {
 		this.grabNotes = this.grabNotes.bind(this);
 		this.removeNote = this.removeNote.bind(this);
 	  this.saveNote = this.saveNote.bind(this);
+		this.updateNoteLayout = null;
+
 		this.state = {
       notes: []
     }
@@ -74,7 +76,8 @@ class App extends React.Component {
 				key = {note._id}
 				id = {note._id}
 				content = {note.content}
-				remove = {this.removeNote} />
+				remove = {this.removeNote}
+			/>
     );
 
     return (
@@ -82,12 +85,15 @@ class App extends React.Component {
 
 			<div className="note">
 				<textarea id="note1"></textarea>
-				<button onClick={this.saveNote} className="btn btn-default">Save me</button>
+				<button onClick = {this.saveNote} className="btn btn-default">Save me</button>
 			</div>
 
 
 			<Masonry
-	      className = "notes">
+	      className = "notes"
+				enableResizableChildren = {true}
+				elementType = "div"
+			>
         {notes}
       </Masonry>
 

@@ -1,8 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router'
 import superagent from "superagent"
+import elementResizeDetectorMaker from "element-resize-detector";
 
 import "./Note.scss";
+
+const erd = elementResizeDetectorMaker();
 
 class Note extends React.Component {
   constructor(props) {
@@ -80,10 +83,14 @@ class Note extends React.Component {
 	}
 	sizeFix(e) {
 
-		let noteText = e.target;
+		let noteText = e.target,
+				note = noteText.parentElement,
+				noteTop = note.getElementsByClassName("note__top")[0];
 
 		noteText.style.height = 'auto';
     noteText.style.height = noteText.scrollHeight +'px';
+
+		note.style.height = noteText.style.height + 16 + noteTop.offsetHeight + "px";
 
 		noteText.focus();
 	}
@@ -108,10 +115,6 @@ class Note extends React.Component {
 			noteText.style.height = noteText.scrollHeight +'px';
 		},0)
 
-		noteText.addEventListener("resize",this.resizeT);
-	}
-	resizeT(e) {
-		console.log("resized");
 	}
 	render() {
     return (
