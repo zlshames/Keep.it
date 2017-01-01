@@ -82,7 +82,7 @@ class Note extends React.Component {
 				}
 	  })
 	}
-	widthFix(noteText) {
+	widthFix(noteText,cb) {
 
 		let noteTextCss = window.getComputedStyle(noteText, null),
 				noteTextCss_padding = noteTextCss.getPropertyValue("padding").split(" ")[1],
@@ -106,12 +106,16 @@ class Note extends React.Component {
 		noteTextInner = noteText.offsetWidth - noteTextCss_padding * 2 - noteTextCss_margin * 2;
 		noteTextSupposed = Math.ceil(longestLine * noteTextCss_fontSize / 1.5);
 
-		//console.log(noteText.offsetWidth,windowWidth)
-
-		if((noteTextInner < noteTextSupposed && noteText.offsetWidth + goldenNumber < windowWidth) ||
+		if((noteTextInner < noteTextSupposed && noteTextSupposed + goldenNumber < windowWidth) ||
 			(noteTextInner > noteTextSupposed && noteText.offsetWidth > 160)) {
-			//let setTo = ((noteTextSupposed + noteTextCss_padding * 2 + noteTextCss_margin * 2) + "px")
 			note.style.width = ((noteTextSupposed + noteTextCss_padding * 2 + noteTextCss_margin * 2) + "px");
+		} else if(noteTextSupposed > windowWidth) {
+
+			note.style.width = ((windowWidth - goldenNumber) + "px");
+		}
+
+		if(cb) {
+			cb();
 		}
 	}
 	sizeFix(e) {
@@ -120,12 +124,13 @@ class Note extends React.Component {
 				note = noteText.parentElement,
 				noteTop = note.getElementsByClassName("note__top")[0];
 
+		this.widthFix(noteText);
+
 		noteText.style.height = 'auto';
     noteText.style.height = noteText.scrollHeight +'px';
 		noteText.focus();
 
 		note.style.height = noteText.style.height + 16 + noteTop.offsetHeight + "px";
-		this.widthFix(noteText);
 	}
 	handleKeyDown(e) {
 
@@ -144,11 +149,12 @@ class Note extends React.Component {
 			.getElementById(this.props.id)
 			.getElementsByClassName('note__text')[0];
 
-		this.widthFix(noteText);
-		setTimeout(() => {
-			noteText.style.height = 'auto';
-			noteText.style.height = noteText.scrollHeight +'px';
-		},0)
+		this.widthFix(noteText,() => {
+			setTimeout(() => {
+				noteText.style.height = 'auto';
+				noteText.style.height = noteText.scrollHeight +'px';
+			},0)
+		});
 
 	}
 	render() {
