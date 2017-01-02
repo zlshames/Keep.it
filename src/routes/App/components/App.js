@@ -17,7 +17,7 @@ class App extends React.Component {
     super()
 		this.grabNotes = this.grabNotes.bind(this);
 		this.removeNote = this.removeNote.bind(this);
-	  this.saveNote = this.saveNote.bind(this);
+		this.updateNotes = this.updateNotes.bind(this);
 		this.updateNoteLayout = null;
 
 		this.state = {
@@ -26,28 +26,11 @@ class App extends React.Component {
 		this.grabNotes();
 
   }
-	saveNote(e) {
-
-    let textBox = e.target.previousSibling,
-        noteId = textBox.id,
-        noteText = textBox.value
-
-    superagent
-      .post('http://localhost:3000/notes')
-      .send({
-        content: noteText
-      })
-      .end((err, res) => {
-
-        if(err) {
-				  console.log(err)
-        } else {
-          this.setState({
-            notes: res.body.data
-          })
-        }
-    })
-  }
+	updateNotes(notes) {
+		this.setState({
+			notes,
+		});
+	}
 	grabNotes() {
 
 		superagent
@@ -79,23 +62,25 @@ class App extends React.Component {
 				remove = {this.removeNote}
 			/>
     );
-
+		//TODO change the i button to text box and have save option
+		//Use note component with added default props to see if it's main note.
+		//When note is focused,show date and save button
     return (
       <div className = "app">
 
-			<div className="note">
-				<textarea id="note1"></textarea>
-				<button onClick = {this.saveNote} className="btn btn-default">Save me</button>
-			</div>
-
-
-			<Masonry
-	      className = "notes"
-				enableResizableChildren = {true}
-				elementType = "div"
-			>
-        {notes}
-      </Masonry>
+				<Note
+					id = "new_note"
+					placeHolder = "Start new note"
+					type = "new"
+					updateParent = {this.updateNotes}
+				/>
+				<Masonry
+		      className = "notes"
+					enableResizableChildren = {true}
+					elementType = "div"
+				>
+	        {notes}
+	      </Masonry>
 
       </div>
     );

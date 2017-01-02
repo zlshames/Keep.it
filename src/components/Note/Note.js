@@ -1,13 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router'
 import superagent from "superagent"
-import elementResizeDetectorMaker from "element-resize-detector";
 
 import "./Note.scss";
-
-const erd = elementResizeDetectorMaker();
-
+// replace every noteText with this.noteText
 class Note extends React.Component {
+
   constructor(props) {
 
     super()
@@ -17,7 +15,11 @@ class Note extends React.Component {
 		this.sizeFix = this.sizeFix.bind(this);
 		this.handleKeyDown = this.handleKeyDown.bind(this);
 		this.widthFix = this.widthFix.bind(this);
+		this.emptyNote = this.emptyNote.bind(this);
 
+		this.buttonAction= (props.type === "edit")? this.editNote : this.saveNote;
+
+		//console.log(props);
 		this.state = {
       notes: []
     }
@@ -32,32 +34,38 @@ class Note extends React.Component {
 	}
   saveNote(e) {
 
-    let textBox = e.target.previousSibling,
-        noteId = textBox.id,
-        noteText = textBox.value
+		const text = document.getElementById(this.props.id)
+			.getElementsByClassName("note__text")[0];
 
     superagent
       .post('http://localhost:3000/notes')
-      .send({
-        content: noteText
-      })
+      .send({ content: text.value })
       .end((err, res) => {
 
         if(err) {
 				  console.log(err)
         } else {
-          this.setState({
-            notes: res.body.data
-          })
+					this.props.updateParent(res.body.data);
+					this.emptyNote();
         }
     })
   }
-	editNote(e) {
+	emptyNote() {
+
+		let text = document.getElementById(this.props.id).getElementsByClassName("note__text")[0];
+
+		text.value = "";
+		this.sizeFix(text);
+	}
+	editNote() {
+
+		const text = document.getElementById(this.props.id)
+			.getElementsByClassName("note__text")[0].value;
 
 		superagent
-      .put('http://localhost:3000/notes/' + e.target.parentElement.id)
+      .put('http://localhost:3000/notes/' + this.props.id)
 			.send({
-				content : e.target.value
+				content : text
 			})
       .end((err, res) => {
 
@@ -118,10 +126,9 @@ class Note extends React.Component {
 			cb();
 		}
 	}
-	sizeFix(e) {
+	sizeFix(noteText) {
 
-		let noteText = e.target,
-				note = noteText.parentElement,
+		let note = noteText.parentElement,
 				noteTop = note.getElementsByClassName("note__top")[0];
 
 		this.widthFix(noteText);
@@ -135,12 +142,13 @@ class Note extends React.Component {
 	handleKeyDown(e) {
 
 		e.persist();//need to save it for the async call
-		//console.log(e.keyCode);
-		if(e.keyCode === 13 || e.keyCode === 32 || e.keyCode === 8) {
-			this.editNote(e);
+		let noteText = e.target;
+
+		if((e.keyCode === 13 || e.keyCode === 32 || e.keyCode === 8) && this.props.type === "edit") {
+			this.editNote();
 		}
 		setTimeout(() => {
-			this.sizeFix(e);
+			this.sizeFix(noteText);
 		},0);
 	}
 	componentDidMount() {
@@ -150,32 +158,72 @@ class Note extends React.Component {
 			.getElementsByClassName('note__text')[0];
 
 		this.widthFix(noteText,() => {
+
 			setTimeout(() => {
 				noteText.style.height = 'auto';
 				noteText.style.height = noteText.scrollHeight +'px';
 			},0)
 		});
 
+		noteText.addEventListener("focusin", () => {
+
+			noteText
+				.parentElement
+				.getElementsByClassName('note__bottom')[0].className += "active";
+
+		});
+
+		noteText.addEventListener("focusout", (e) => {
+
+			console.log(noteText,e);
+			// noteText
+			// 	.parentElement
+			// 	.getElementsByClassName('note__bottom')[0].className.replace("active","");
+
+		});
+	}
+	componentWillUnmount() {
+		let noteText = document
+			.getElementById(this.props.id)
+			.getElementsByClassName('note__text')[0];
+
+		noteText.removeEventListener("focusout");
+		noteText.removeEventListener("focusin");
+
 	}
 	render() {
+
+		let closeFunction = (this.props.type === "edit")? this.deleteNote : this.emptyNote;
+
     return (
 
 			<div className = "note" id = {this.props.id}>
-				<div className = "note__top">
-					<i onClick = {this.deleteNote}  className = "fa fa-times" aria-hidden="true"></i>
+				<div className = {"note__top"}>
+					<i onClick = {closeFunction}  className = "fa fa-times" aria-hidden="true"></i>
 				</div>
 				<textarea
 					className = "note__text"
 					onKeyDown = {this.handleKeyDown}
-					onChange = {this.sizeFix}
-					onCut = {this.sizeFix}
-					onPaste = {this.sizeFix}
-					onDrop= {this.sizeFix}
-					defaultValue = {this.props.content} >
+					onChange = {this.handleKeyDown}
+					onCut = {this.handleKeyDown}
+					onPaste = {this.handleKeyDown}
+					onDrop= {this.handleKeyDown}
+					defaultValue = {this.props.content}
+					placeholder = {this.props.placeHolder} >
 				</textarea>
+				<div className = "note__bottom">
+					<button onClick = {this.buttonAction} >Save note</button>
+				</div>
 			</div>
     );
   }
+}
+
+Note.defaultProps = {
+	content : "",
+	placeHolder : "",
+	type : "edit",
+	buttonAction : null,
 }
 
 export default Note

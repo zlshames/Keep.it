@@ -1,16 +1,23 @@
+
 .note {
 
 	margin : 0.5em;
-	background: white;
+	background: #F2F0F2;
 	color : black;
 	display: flex;
 	flex-direction: column;
 	min-width: 159px;
+	box-shadow: -4px 5px 5px 0px rgba(0,0,0,0.75);
 	&__top {
 
 		display: flex;
 		justify-content: flex-end;
 		margin-bottom: 0;
+	//	background: linear-gradient(#F3F3F3, #E5E1E6);
+	//	background: #E6E6E6;
+		&__new {
+			height : 32px;
+		}
 		i {
 
 			font-size: 20px;
@@ -25,9 +32,17 @@
 		border : none;
 		resize: none;
 		width: auto;
+		background: transparent;
+		overflow:hidden;
 		&:focus {
 
 			outline: none;
+		}
+	}
+	&__bottom {
+
+		&:not(.active) {
+			display: none;
 		}
 	}
 }
