@@ -62,9 +62,7 @@ class App extends React.Component {
 				remove = {this.removeNote}
 			/>
     );
-		//TODO change the i button to text box and have save option
-		//Use note component with added default props to see if it's main note.
-		//When note is focused,show date and save button
+		
     return (
       <div className = "app">
 
