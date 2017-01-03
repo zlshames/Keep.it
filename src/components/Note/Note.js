@@ -16,9 +16,10 @@ class Note extends React.Component {
 		this.handleKeyDown = this.handleKeyDown.bind(this);
 		this.widthFix = this.widthFix.bind(this);
 		this.emptyNote = this.emptyNote.bind(this);
+		this.activeHandle = this.activeHandle.bind(this);
 
 		this.buttonAction= (props.type === "edit")? this.editNote : this.saveNote;
-
+		this.mouseOver = false;
 		//console.log(props);
 		this.state = {
       notes: []
@@ -153,9 +154,9 @@ class Note extends React.Component {
 	}
 	componentDidMount() {
 
-		let noteText = document
-			.getElementById(this.props.id)
-			.getElementsByClassName('note__text')[0];
+		let noteText = document.
+					getElementById(this.props.id)
+					.getElementsByClassName('note__text')[0];
 
 		this.widthFix(noteText,() => {
 
@@ -164,31 +165,22 @@ class Note extends React.Component {
 				noteText.style.height = noteText.scrollHeight +'px';
 			},0)
 		});
-
-		noteText.addEventListener("focusin", () => {
-
-			noteText
-				.parentElement
-				.getElementsByClassName('note__bottom')[0].className += "active";
-
-		});
-
-		noteText.addEventListener("focusout", (e) => {
-
-			console.log(noteText,e);
-			// noteText
-			// 	.parentElement
-			// 	.getElementsByClassName('note__bottom')[0].className.replace("active","");
-
-		});
 	}
-	componentWillUnmount() {
-		let noteText = document
-			.getElementById(this.props.id)
-			.getElementsByClassName('note__text')[0];
+	activeHandle(e) {
 
-		noteText.removeEventListener("focusout");
-		noteText.removeEventListener("focusin");
+		let note = document.getElementById(this.props.id),
+				noteText = note.getElementsByClassName('note__bottom')[0],
+				notes = document.getElementsByClassName('note__bottom');
+
+		for(let i = 0; i < notes.length ; i++) {
+
+			if(notes[i] === noteText && this.mouseOver) {
+				noteText.className += " active";
+				note.getElementsByClassName('note__text')[0].focus();
+			} else {
+				notes[i].className = notes[i].className.replace("active","")
+			}
+		}
 
 	}
 	render() {
@@ -197,7 +189,13 @@ class Note extends React.Component {
 
     return (
 
-			<div className = "note" id = {this.props.id}>
+			<div
+				className = "note"
+				id = {this.props.id}
+				onMouseEnter = {() => {this.mouseOver = true}}
+				onMouseLeave = {() => {this.mouseOver = false}}
+				onClick = {this.activeHandle}
+				>
 				<div className = {"note__top"}>
 					<i onClick = {closeFunction}  className = "fa fa-times" aria-hidden="true"></i>
 				</div>
@@ -209,7 +207,9 @@ class Note extends React.Component {
 					onPaste = {this.handleKeyDown}
 					onDrop= {this.handleKeyDown}
 					defaultValue = {this.props.content}
-					placeholder = {this.props.placeHolder} >
+					placeholder = {this.props.placeHolder}
+					onBlur = {this.activeHandle}
+				>
 				</textarea>
 				<div className = "note__bottom">
 					<button onClick = {this.buttonAction} >Save note</button>
