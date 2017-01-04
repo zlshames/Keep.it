@@ -1,11 +1,12 @@
 .app {
 
 	#new_note {
-
-		margin: 0 auto;
+		margin : 0 auto 0 1.5em;
+	}
+	&__notes__wrap {
+		display: block;
 	}
 }
 .notes {
-
 	padding : 1em;
 }

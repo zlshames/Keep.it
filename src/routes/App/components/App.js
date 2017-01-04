@@ -6,10 +6,7 @@ import Note from "../../../components/Note";
 import Masonry from 'react-masonry-component';
 
 // TODO:
-//ADD undo method for deleted notes
-//Extract the Note to a different component
-//	Add shouldcomponentUpdate for text,id changes
-//Move save note to Note class
+//Undo option for deleted notes
 
 class App extends React.Component {
   constructor() {
@@ -62,7 +59,7 @@ class App extends React.Component {
 				remove = {this.removeNote}
 			/>
     );
-		
+
     return (
       <div className = "app">
 
@@ -72,13 +69,15 @@ class App extends React.Component {
 					type = "new"
 					updateParent = {this.updateNotes}
 				/>
-				<Masonry
-		      className = "notes"
-					enableResizableChildren = {true}
-					elementType = "div"
-				>
-	        {notes}
-	      </Masonry>
+				<div className = "app__notes__wrap">
+					<Masonry
+						className = "notes"
+						enableResizableChildren = {true}
+						elementType = "div"
+					>
+						{notes}
+					</Masonry>
+				</div>
 
       </div>
     );

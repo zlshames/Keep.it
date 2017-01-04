@@ -20,7 +20,10 @@ class Note extends React.Component {
 
 		this.buttonAction= (props.type === "edit")? this.editNote : this.saveNote;
 		this.mouseOver = false;
-		//console.log(props);
+
+		this.note = null;
+		this.noteText = null;
+
 		this.state = {
       notes: []
     }
@@ -35,12 +38,11 @@ class Note extends React.Component {
 	}
   saveNote(e) {
 
-		const text = document.getElementById(this.props.id)
-			.getElementsByClassName("note__text")[0];
+		let { noteText } = this;
 
     superagent
       .post('http://localhost:3000/notes')
-      .send({ content: text.value })
+      .send({ content: noteText.value })
       .end((err, res) => {
 
         if(err) {
@@ -53,20 +55,19 @@ class Note extends React.Component {
   }
 	emptyNote() {
 
-		let text = document.getElementById(this.props.id).getElementsByClassName("note__text")[0];
+		let { noteText } = this;
 
-		text.value = "";
-		this.sizeFix(text);
+		noteText.value = "";
+		this.sizeFix(noteText);
 	}
 	editNote() {
 
-		const text = document.getElementById(this.props.id)
-			.getElementsByClassName("note__text")[0].value;
+		let { noteText } = this;
 
 		superagent
       .put('http://localhost:3000/notes/' + this.props.id)
 			.send({
-				content : text
+				content : noteText.value
 			})
       .end((err, res) => {
 
@@ -78,7 +79,7 @@ class Note extends React.Component {
 	deleteNote(e) {
 
 		e.persist();
-		let note = e.target.parentElement.parentElement;
+		let { note } = this;
 
 		superagent
 	    .delete('http://localhost:3000/notes/' + note.id)
@@ -99,8 +100,7 @@ class Note extends React.Component {
 				noteTextCss_fontSize = noteTextCss.getPropertyValue("font-size").replace("px",""),
 				noteTextInner,
 				noteTextSupposed,
-				longestLine = noteText.value.split("\n").map(val => val.length),
-				note = noteText.parentElement,
+				note = this.note,
 				windowWidth = document.documentElement.clientWidth,
 				goldenNumber = 80;//plz don't ask
 
@@ -109,14 +109,23 @@ class Note extends React.Component {
 
 		noteTextCss_padding = parseInt(noteTextCss_padding.replace("px",""));
 		noteTextCss_margin = parseInt(noteTextCss_margin.replace("px",""));
-		noteTextCss_fontSize = parseInt(noteTextCss_fontSize);
+		noteTextCss_fontSize = parseInt(noteTextCss_fontSize) - 3;
 
-		longestLine = Math.max(...longestLine);
+
+		noteTextSupposed = noteText.value
+			.split("\n")
+			.reduce((a,b) => (a.length > b.length)? a : b ,0)
+			.split("")
+			.map(val =>
+				(val.toUpperCase() === val)? (noteTextCss_fontSize ) : (noteTextCss_fontSize - 4)
+			)
+			.reduce((a, b) => a + b, 0);
+
 		noteTextInner = noteText.offsetWidth - noteTextCss_padding * 2 - noteTextCss_margin * 2;
-		noteTextSupposed = Math.ceil(longestLine * noteTextCss_fontSize / 1.5);
 
-		if((noteTextInner < noteTextSupposed && noteTextSupposed + goldenNumber < windowWidth) ||
-			(noteTextInner > noteTextSupposed && noteText.offsetWidth > 160)) {
+		if( (noteTextInner < noteTextSupposed && noteTextSupposed + goldenNumber < windowWidth) ||
+			  (noteTextInner > noteTextSupposed && noteText.offsetWidth > 160) ) {
+
 			note.style.width = ((noteTextSupposed + noteTextCss_padding * 2 + noteTextCss_margin * 2) + "px");
 		} else if(noteTextSupposed > windowWidth) {
 
@@ -129,8 +138,9 @@ class Note extends React.Component {
 	}
 	sizeFix(noteText) {
 
-		let note = noteText.parentElement,
-				noteTop = note.getElementsByClassName("note__top")[0];
+		let { note } = this,
+				noteTop = note.getElementsByClassName("note__top")[0],
+				noteBottom = note.getElementsByClassName("note__bottom")[0];
 
 		this.widthFix(noteText);
 
@@ -138,12 +148,12 @@ class Note extends React.Component {
     noteText.style.height = noteText.scrollHeight +'px';
 		noteText.focus();
 
-		note.style.height = noteText.style.height + 16 + noteTop.offsetHeight + "px";
+		note.style.height = (noteText.style.height + noteBottom.offsetHeight + noteTop.offsetHeight + "px");
 	}
 	handleKeyDown(e) {
 
 		e.persist();//need to save it for the async call
-		let noteText = e.target;
+		let { noteText } = this;
 
 		if((e.keyCode === 13 || e.keyCode === 32 || e.keyCode === 8) && this.props.type === "edit") {
 			this.editNote();
@@ -154,9 +164,10 @@ class Note extends React.Component {
 	}
 	componentDidMount() {
 
-		let noteText = document.
-					getElementById(this.props.id)
-					.getElementsByClassName('note__text')[0];
+		this.note = document.getElementById(this.props.id);
+		this.noteText = this.note.getElementsByClassName("note__text")[0];
+
+		let { note, noteText } = this;
 
 		this.widthFix(noteText,() => {
 
@@ -168,17 +179,17 @@ class Note extends React.Component {
 	}
 	activeHandle(e) {
 
-		let note = document.getElementById(this.props.id),
-				noteText = note.getElementsByClassName('note__bottom')[0],
-				notes = document.getElementsByClassName('note__bottom');
+		let { note } = this,
+				notes = document.getElementsByClassName('note');
 
 		for(let i = 0; i < notes.length ; i++) {
 
-			if(notes[i] === noteText && this.mouseOver) {
-				noteText.className += " active";
+			if(notes[i] === note && this.mouseOver) {
+
+				note.className += " active";
 				note.getElementsByClassName('note__text')[0].focus();
 			} else {
-				notes[i].className = notes[i].className.replace("active","")
+				notes[i].className = notes[i].className.replace(/\s(active)/g,"")
 			}
 		}
 
@@ -212,7 +223,7 @@ class Note extends React.Component {
 				>
 				</textarea>
 				<div className = "note__bottom">
-					<button onClick = {this.buttonAction} >Save note</button>
+					<button className = "btn" onClick = {this.buttonAction} >Save</button>
 				</div>
 			</div>
     );

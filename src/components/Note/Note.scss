@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway:200,400');
 
 .note {
 
@@ -7,19 +8,21 @@
 	display: flex;
 	flex-direction: column;
 	min-width: 159px;
-	box-shadow: -4px 5px 5px 0px rgba(0,0,0,0.75);
+	box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.5);
 	&__top {
 
 		display: flex;
 		justify-content: flex-end;
 		margin-bottom: 0;
-	//	background: linear-gradient(#F3F3F3, #E5E1E6);
-	//	background: #E6E6E6;
-		&__new {
+		height : 0;
+		overflow: hidden;
+		transition: height 0.3s ease-out;
+		.active > & {
+
 			height : 32px;
 		}
 		i {
-
+			color : rgba(0, 0, 0, 0.69);
 			font-size: 20px;
 			cursor: pointer;
 			margin: 0.3em;
@@ -27,13 +30,15 @@
 	}
 	&__text{
 
-		margin : 1em;
-		margin-top: 0;
+		margin : 0.5em;
 		border : none;
 		resize: none;
 		width: auto;
 		background: transparent;
 		overflow:hidden;
+		.active > & {
+			margin: 0 0.5em;
+		}
 		&:focus {
 
 			outline: none;
@@ -41,8 +46,26 @@
 	}
 	&__bottom {
 
-		&:not(.active) {
-			display: none;
+		height: 0;
+		overflow: hidden;
+		transition: height 0.3s ease-out;
+		display: flex;
+		justify-content: flex-end;
+		button {
+
+			margin : 0.5em;
+			padding : 0.1em 0.3em;
+			margin-top: 0;
+			font-size: 13px;
+			background: #5E8EE4;
+			color : #F7F7F7;
+			font-family: 'Raleway', sans-serif;
+			letter-spacing: 0.08em;
 		}
+		.active > &{
+
+			height: 37px;
+		}
+
 	}
 }
