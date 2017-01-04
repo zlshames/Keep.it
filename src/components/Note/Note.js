@@ -67,7 +67,7 @@ class Note extends React.Component {
 		superagent
       .put('http://localhost:3000/notes/' + this.props.id)
 			.send({
-				content : noteText
+				content : noteText.value
 			})
       .end((err, res) => {
 
@@ -100,7 +100,6 @@ class Note extends React.Component {
 				noteTextCss_fontSize = noteTextCss.getPropertyValue("font-size").replace("px",""),
 				noteTextInner,
 				noteTextSupposed,
-				longestLine = noteText.value.split("\n").map(val => val.length),
 				note = this.note,
 				windowWidth = document.documentElement.clientWidth,
 				goldenNumber = 80;//plz don't ask
@@ -110,11 +109,19 @@ class Note extends React.Component {
 
 		noteTextCss_padding = parseInt(noteTextCss_padding.replace("px",""));
 		noteTextCss_margin = parseInt(noteTextCss_margin.replace("px",""));
-		noteTextCss_fontSize = parseInt(noteTextCss_fontSize);
+		noteTextCss_fontSize = parseInt(noteTextCss_fontSize) - 3;
 
-		longestLine = Math.max(...longestLine);
+
+		noteTextSupposed = noteText.value
+			.split("\n")
+			.reduce((a,b) => (a.length > b.length)? a : b ,0)
+			.split("")
+			.map(val =>
+				(val.toUpperCase() === val)? (noteTextCss_fontSize ) : (noteTextCss_fontSize - 4)
+			)
+			.reduce((a, b) => a + b, 0);
+
 		noteTextInner = noteText.offsetWidth - noteTextCss_padding * 2 - noteTextCss_margin * 2;
-		noteTextSupposed = Math.ceil(longestLine * noteTextCss_fontSize / 1.5);
 
 		if( (noteTextInner < noteTextSupposed && noteTextSupposed + goldenNumber < windowWidth) ||
 			  (noteTextInner > noteTextSupposed && noteText.offsetWidth > 160) ) {
@@ -131,7 +138,9 @@ class Note extends React.Component {
 	}
 	sizeFix(noteText) {
 
-		let { note } = this;
+		let { note } = this,
+				noteTop = note.getElementsByClassName("note__top")[0],
+				noteBottom = note.getElementsByClassName("note__bottom")[0];
 
 		this.widthFix(noteText);
 
@@ -139,7 +148,7 @@ class Note extends React.Component {
     noteText.style.height = noteText.scrollHeight +'px';
 		noteText.focus();
 
-		note.style.height = noteText.style.height + 16 + noteTop.offsetHeight + "px";
+		note.style.height = (noteText.style.height + noteBottom.offsetHeight + noteTop.offsetHeight + "px");
 	}
 	handleKeyDown(e) {
 
@@ -176,11 +185,11 @@ class Note extends React.Component {
 		for(let i = 0; i < notes.length ; i++) {
 
 			if(notes[i] === note && this.mouseOver) {
-				
+
 				note.className += " active";
 				note.getElementsByClassName('note__text')[0].focus();
 			} else {
-				notes[i].className = notes[i].className.replace(" active","")
+				notes[i].className = notes[i].className.replace(/\s(active)/g,"")
 			}
 		}
 
@@ -214,7 +223,7 @@ class Note extends React.Component {
 				>
 				</textarea>
 				<div className = "note__bottom">
-					<button className = "btn" onClick = {this.buttonAction} >Save note</button>
+					<button className = "btn" onClick = {this.buttonAction} >Save</button>
 				</div>
 			</div>
     );
