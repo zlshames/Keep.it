@@ -69,15 +69,14 @@ class App extends React.Component {
 					type = "new"
 					updateParent = {this.updateNotes}
 				/>
-				<div className = "app__notes__wrap">
-					<Masonry
-						className = "notes"
-						enableResizableChildren = {true}
-						elementType = "div"
-					>
-						{notes}
-					</Masonry>
-				</div>
+				
+				<Masonry
+					className = "notes"
+					enableResizableChildren = {true}
+					elementType = "div"
+				>
+					{notes}
+				</Masonry>
 
       </div>
     );
