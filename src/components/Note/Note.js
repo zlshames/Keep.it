@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import superagent from "superagent"
 
 import "./Note.scss"
-// replace every noteText with this.noteText
+
 class Note extends React.Component {
 
   constructor(props) {
@@ -17,6 +17,7 @@ class Note extends React.Component {
     this.widthFix = this.widthFix.bind(this)
     this.emptyNote = this.emptyNote.bind(this)
     this.activeHandle = this.activeHandle.bind(this)
+		this.blurNote = this.blurNote.bind(this);
 
     this.buttonAction= (props.type === "edit")? this.editNote : this.saveNote
     this.mouseOver = false
@@ -60,7 +61,7 @@ class Note extends React.Component {
     noteText.value = ""
     this.sizeFix(noteText)
   }
-  editNote() {
+  editNote(e) {
 
     let { noteText } = this
 
@@ -73,7 +74,9 @@ class Note extends React.Component {
 
         if (err) {
           console.log(err)
-        }
+        } else if(e){
+					this.blurNote(500);
+				}
     })
   }
   deleteNote(e) {
@@ -194,6 +197,20 @@ class Note extends React.Component {
     }
 
   }
+	blurNote(timer = 0) {
+
+
+		let { note } = this
+		this.mouseOver = false;
+
+		setTimeout(() => {
+
+			note.blur();
+			note.className = note.className.replace(/\s(active)/g,"")
+
+		}, timer);
+
+	}
   render() {
 
     let closeFunction = (this.props.type === "edit")? this.deleteNote : this.emptyNote
@@ -219,7 +236,6 @@ class Note extends React.Component {
           onDrop= {this.handleKeyDown}
           defaultValue = {this.props.content}
           placeholder = {this.props.placeHolder}
-          onBlur = {this.activeHandle}
         >
         </textarea>
         <div className = "note__bottom">
