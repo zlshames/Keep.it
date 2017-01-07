@@ -61,7 +61,7 @@ class Note extends React.Component {
     noteText.value = ""
     this.sizeFix(noteText)
   }
-  editNote() {
+  editNote(e) {
 
     let { noteText } = this
 
@@ -74,8 +74,8 @@ class Note extends React.Component {
 
         if (err) {
           console.log(err)
-        } else {
-					this.blurNote();
+        } else if(e){
+					this.blurNote(500);
 				}
     })
   }
@@ -197,12 +197,18 @@ class Note extends React.Component {
     }
 
   }
-	blurNote() {
+	blurNote(timer = 0) {
+
 
 		let { note } = this
+		this.mouseOver = false;
 
-		note.blur();
-		note.className = note.className.replace(/\s(active)/g,"")
+		setTimeout(() => {
+
+			note.blur();
+			note.className = note.className.replace(/\s(active)/g,"")
+
+		}, timer);
 
 	}
   render() {
@@ -230,7 +236,6 @@ class Note extends React.Component {
           onDrop= {this.handleKeyDown}
           defaultValue = {this.props.content}
           placeholder = {this.props.placeHolder}
-          onBlur = {this.blurNote}
         >
         </textarea>
         <div className = "note__bottom">
