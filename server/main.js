@@ -71,7 +71,7 @@ if (project.env === 'development') {
 
     if (reqPath === '/app') {
       if (!req.isAuthenticated()) {
-        return res.redirect('/login')
+        return res.redirect('/')
       }
     }
 
@@ -104,7 +104,7 @@ if (project.env === 'development') {
 
     if (reqPath === '/app') {
       if (!req.isAuthenticated()) {
-        return res.redirect('/login')
+        return res.redirect('/')
       }
     }
 

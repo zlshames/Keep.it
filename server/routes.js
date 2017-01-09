@@ -7,13 +7,25 @@ const isAuthenticated = require('./middleware')
 module.exports = function (app, passport) {
   // Auth Check route
   app.get('/auth/check', (request, response) => {
-    if (req.isAuthenticated()) {
+    if (request.isAuthenticated()) {
       response.json({
         authenticated: true,
         user: req.user
       })
     } else {
       response.json({ authenticated: false })
+    }
+  })
+
+  app.get('/auth/logout', (request, response) => {
+    if (request.isAuthenticated()) {
+      request.logout();
+      response.redirect('/');
+    } else {
+      response.json({
+        success: false,
+        error: 'You must be logged in to logout'
+      })
     }
   })
 
