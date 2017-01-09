@@ -5,16 +5,16 @@ import "./Header.scss"
 
 class Header extends React.Component {
   login = (
-    <div style={ Styles.bodyRow }>
-      <p style={ Styles.login }>Login with:</p>
-      <i onClick={ this.loginRedirect } id="github" style={ Styles.social } className="fa fa-github fa-2x"></i>
-      <i onClick={ this.loginRedirect } id="google" style={ Styles.social } className="fa fa-google fa-2x"></i>
-      <i onClick={ this.loginRedirect } id="facebook" style={ Styles.social } className="fa fa-facebook fa-2x"></i>
+    <div className = "header__login">
+      <p className = "login__text">Login with:</p>
+      <i onClick={ this.loginRedirect } id="github" className="fa fa-github fa-2x"></i>
+      <i onClick={ this.loginRedirect } id="google" className="fa fa-google fa-2x"></i>
+      <i onClick={ this.loginRedirect } id="facebook" className="fa fa-facebook fa-2x"></i>
     </div>
   )
 
   logout = (
-    <a href="/auth/logout" style={ Styles.logout }>Logout</a>
+    <a href="/auth/logout" className = "header__logout">Logout</a>
   )
 
   constructor() {
@@ -52,31 +52,6 @@ class Header extends React.Component {
           { this.state.login }
         </header>
     )
-  }
-}
-
-const Styles = {
-  bodyRow: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    width: '225px',
-    backgroundColor: 'whitesmoke',
-    borderRadius: '5px',
-    paddingLeft: '5px',
-    paddingRight: '5px'
-  },
-  login: {
-    marginTop: '15px',
-    color: '#5E8EE4'
-  },
-  logout: {
-    marginTop: '13px'
-  },
-  social: {
-    color: '#5E8EE4',
-    cursor: 'pointer'
   }
 }
 
