@@ -1,9 +1,21 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/components/input.min.css");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/components/icon.min.css");
 .app {
 
+	&__header {
+
+		display: flex;
+		margin: 0 1.5em;
+		.note__filter > .input > .filter__button {
+
+			background-color : #5e8ee4!important;
+		}
+	}
 	#new_note {
-		margin : 0 auto 0 1.5em;
+		margin : 0 auto 0 0;
 	}
 }
+
 .notes {
 	padding : 1em;
 }
