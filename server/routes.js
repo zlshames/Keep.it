@@ -34,6 +34,7 @@ module.exports = function (app, passport) {
   app.post('/notes', isAuthenticated, NoteController.store)
   app.put('/notes/:id', isAuthenticated, NoteController.update)
   app.delete('/notes/:id', isAuthenticated, NoteController.destroy)
+  app.post('/notes/filtered', isAuthenticated, NoteController.filter)
 
   // Facebook Auth
   app.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email'] }))

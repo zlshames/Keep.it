@@ -58,6 +58,28 @@ class NoteController {
     })
   }
 
+  static filter(request, response) {
+    // Find all notes from a user
+    Note.find({
+      owner: request.user.id,
+      content: { '$regex': request.body.filter, '$options': 'i' }
+    }, (err, notes) => {
+      if (err) {
+        return response.json({
+          success: false,
+          message: err.message
+        })
+      }
+
+      // Send success response
+      response.json({
+        success: true,
+        message: 'Successfully fetched filtered notes',
+        data: notes
+      })
+    })
+  }
+
   static update(request, response) {
     // Find note, and update content
     Note.findOneAndUpdate({ _id: request.params.id, owner: request.user.id }, { content: request.body.content }, (err, note) => {

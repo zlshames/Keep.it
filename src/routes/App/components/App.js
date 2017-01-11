@@ -14,6 +14,7 @@ class App extends React.Component {
 
     // Bind methods
     this.grabNotes = this.grabNotes.bind(this);
+    this.grabFilteredNotes = this.grabFilteredNotes.bind(this);
     this.removeNote = this.removeNote.bind(this);
     this.updateNotes = this.updateNotes.bind(this);
     this.updateNoteLayout = null;
@@ -23,6 +24,7 @@ class App extends React.Component {
 
     // Grab notes
     this.grabNotes();
+    //this.grabFilteredNotes()
   }
 
   updateNotes(notes) {
@@ -34,6 +36,22 @@ class App extends React.Component {
       .get('http://localhost:3000/notes')
       .end((err, res) => {
 
+        if (err) {
+          console.log(err)
+        } else {
+          this.setState({
+            notes: res.body.data
+          })
+        }
+    })
+  }
+
+  grabFilteredNotes() {
+    superagent
+      .post('http://localhost:3000/notes/filtered')
+      // Insert Filter text here
+      .send({ filter: 'test' })
+      .end((err, res) => {
         if (err) {
           console.log(err)
         } else {
