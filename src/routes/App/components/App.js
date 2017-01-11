@@ -5,8 +5,6 @@ import './App.scss'
 import Note from "../../../components/Note";
 import Masonry from 'react-masonry-component';
 
-// TODO:
-// Undo option for deleted notes
 
 class App extends React.Component {
   constructor() {
@@ -47,10 +45,12 @@ class App extends React.Component {
   }
 
   grabFilteredNotes() {
+
+		let filter = document.getElementById("filter__value").value;
+
     superagent
       .post('http://localhost:3000/notes/filtered')
-      // Insert Filter text here
-      .send({ filter: 'test' })
+      .send({ filter })
       .end((err, res) => {
         if (err) {
           console.log(err)
@@ -80,12 +80,26 @@ class App extends React.Component {
     return (
       <div className="app">
 
-        <Note
-          id="new_note"
-          placeHolder="Start new note"
-          type="new"
-          updateParent={ this.updateNotes }
-        />
+      	<div className = "app__header">
+					<Note
+	          id="new_note"
+	          placeHolder="Start new note"
+	          type="new"
+	          updateParent={ this.updateNotes }
+	        />
+
+					<div className = "note__filter">
+						<div className = "ui icon input">
+							<input
+								id = "filter__value"
+								type="text" placeholder="Search..."
+								onKeyDown = {this.grabFilteredNotes}
+								onKeyUp = {this.grabFilteredNotes}
+							></input>
+							<i className = "inverted circular search link icon filter__button" onClick = {this.grabFilteredNotes}></i>
+						</div>
+					</div>
+				</div>
 
         <Masonry
           className="notes"
