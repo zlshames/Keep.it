@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@snyk/protect@^1.1211.0":
+  version "1.1211.0"
+  resolved "https://registry.yarnpkg.com/@snyk/protect/-/protect-1.1211.0.tgz#b882f6d38a845ce93f60e757fe745943a4211fe9"
+  integrity sha512-MU7DQmIIdNFFFP3XjQtTXoAwIEtpx38ZzUGRmXqrz9EM9Zhv1IO8TArzmGAbrQ5jwlawPM9MSjLGptX88YH/zQ==
+
 abbrev@1:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.0.9.tgz#91b4792588a7738c25f35dd6f63752a2f8776135"
